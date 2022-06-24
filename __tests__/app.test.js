@@ -43,7 +43,6 @@ describe('github oauth routes', () => {
     const logout = await agent.delete('/api/v1/github/sessions');
     console.log('logout', logout.body);
     const checkLogoutCookie = await agent.get('/api/v1/github/posts');
-    console.log('checkLogoutCookie', checkLogoutCookie.body);
     expect(checkLogoutCookie.body.status).toEqual(401);
   });
 
