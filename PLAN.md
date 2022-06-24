@@ -1,9 +1,9 @@
 I GET github login route (redirect to github login)
   - test
-II signin using github username
-  - github user model
-III GET callback to redirect after login
+II GET callback to redirect after login
   - test
+III signin using github username
+  - github user model
 IV GET posts for all users (using middleware for authentication)
   - test
   - authentication middleware
