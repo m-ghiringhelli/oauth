@@ -5,6 +5,8 @@ const app = require('../lib/app');
 
 jest.mock('../lib/services/github');
 
+const agent = request.agent(app);
+
 describe('github oauth routes', () => {
   beforeEach(() => {
     return setup(pool);
@@ -23,8 +25,6 @@ describe('github oauth routes', () => {
       .agent(app)
       .get('/api/v1/github/callback?code=12')
       .redirects(1);
-
-    console.log('res', res.body);
     
     expect(res.body).toEqual({
       id: expect.any(String),
@@ -33,6 +33,18 @@ describe('github oauth routes', () => {
       iat: expect.any(Number),
       exp: expect.any(Number),
     });
+  });
+
+  it('should sign out a user', async () => {
+    //login
+    const login = await agent.get('/api/v1/github/callback?code=12').redirects(1);
+    const checkCookie = await agent.get('/api/v1/github/posts');
+    expect(login.body).toEqual(checkCookie.body);
+    const logout = await agent.delete('/api/v1/github/sessions');
+    console.log('logout', logout.body);
+    const checkLogoutCookie = await agent.get('/api/v1/github/posts');
+    console.log('checkLogoutCookie', checkLogoutCookie.body);
+    expect(checkLogoutCookie.body.status).toEqual(401);
   });
 
   afterAll(() => {
